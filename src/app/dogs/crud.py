@@ -42,7 +42,7 @@ async def put_dog(name: str, payload:DogSchema):
         .where(name == dogs.c.name)
         .values(is_adopted=payload.is_adopted)
         .returning(dogs.c.id)
-        )
+    )
 
     return await database.execute(query=query)
 

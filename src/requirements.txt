@@ -1,5 +1,4 @@
 asyncpg==0.23.0
-bcrypt==3.2.0
 certifi==2020.12.5
 cffi==1.14.5
 chardet==4.0.0
@@ -22,3 +21,4 @@ starlette==0.14.2
 typing-extensions==3.10.0.0
 urllib3==1.26.4
 uvicorn==0.13.4
+celery==5

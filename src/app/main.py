@@ -4,6 +4,7 @@ from typing import List
 # functions to be implement
 from .dogs import dogs
 from .auth import auth
+from .users import users
 
 # db
 from .db import engine, database, metadata
@@ -27,9 +28,15 @@ async def startup():
 async def shutdown():
     await database.disconnect()
 
-# get dogs route
+# auth route
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+
+# dogs routes
 app.include_router(dogs.router, prefix="/api/dogs", tags=["dogs"])
+
+# users routes
+app.include_router(users.router, prefix="/api/users", tags=["users"])
+
 
 #@app.get("/api/dogs/is_adopted")
 #async def dog_adopted(limit: int = 10, offset: int = 1):
