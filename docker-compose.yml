@@ -12,6 +12,9 @@ services:
       - 8002:8000
     environment: 
       - DATABASE_URL=postgresql://guane-test:guane-test@db/guane-test_dev
+    networks: 
+      - fastapi
+      
 
   db:
     image: postgres:13-alpine
@@ -23,5 +26,54 @@ services:
       - POSTGRES_USER=guane-test
       - POSTGRES_PASSWORD=guane-test
       - POSTGRES_DB=guane-test_dev
+    networks: 
+      - fastapi
+
+  rabbit:
+    image: rabbitmq:management
+    environment: 
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBIT_DEFAULT_PASS: "guest"
+    ports: 
+      - "5672:5672"
+      - "15672:15672"
+    networks: 
+      fastapi:
+        aliases: 
+          - fastapi-rabbit
+  redis:
+    image: "bitnami/redis:5.0.4"
+    environment:
+      - REDIS_PASSWORD=password123
+    ports:
+      - "6379:6379"
+    volumes:
+      - "redis_data:/bitnami/redis/data"
+    networks:
+      - fastapi
+
+  celery-flower:
+    image: mher/flower:0.9.7
+    environment:
+      - AMQP_USERNAME=guest
+      - AMQP_PASSWORD=guest
+      - AMQP_ADMIN_USERNAME=guest
+      - AMQP_ADMIN_PASSWORD=guest
+      - AMQP_HOST=fastapi-rabbit
+      - AMQP_PORT=5672
+      - AMQP_ADMIN_HOST=fastapi-rabbit
+      - AMQP_ADMIN_PORT=15672
+      - FLOWER_BASIC_AUTH=user:test
+    ports:
+      - "5555:5555"
+    depends_on:
+      - rabbit
+      - redis
+    networks: 
+      - fastapi
 volumes: 
   postgres_data:
+  redis_data:
+networks:
+  fastapi:
+    external: true
