@@ -5,7 +5,6 @@ from datetime import datetime
 
 #typing
 from typing import List
-import celery
 
 #fastapi
 from fastapi import APIRouter, HTTPException, Body, Depends
