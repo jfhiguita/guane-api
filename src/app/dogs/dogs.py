@@ -18,16 +18,16 @@ from .models import DogDB, DogSchema
 from .utils import get_picture
 
 # celery task
-#from ...worker import create_task
+from worker import create_task
 
 
 router = APIRouter()
 
 # create dog
-@router.post("/{name}", dependencies=[Depends(JWTBearer())], response_model=DogDB, response_model_exclude_unset=True, status_code=201)
+@router.post("/{name}", response_model=DogDB, response_model_exclude_unset=True, status_code=201)
 async def create_dog(name: str, payload: DogSchema):
     # async task
-    #create_task.delay(name)
+    create_task.delay(name)
 
     dog_picture = await get_picture()
     dog_create_date = datetime.now()
