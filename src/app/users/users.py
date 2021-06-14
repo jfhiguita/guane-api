@@ -3,6 +3,7 @@
 #fastapi
 from typing import List
 from fastapi import APIRouter,HTTPException
+from fastapi.params import Path
 
 #functions to be implement
 from . import crud
@@ -13,7 +14,14 @@ router = APIRouter()
 
 # create user
 @router.post("/{name}-{last_name}", response_model=UserDB, response_model_exclude_unset=True, status_code=201)
-async def user(name: str, last_name: str, payload: UserSchema):
+async def user(*,
+    name: str = Path(..., title="Name of the user", min_length=3, max_length=50),
+    last_name: str = Path(..., title="Last name of the user", min_length=3, max_length=50),
+    payload: UserSchema):
+
+    if await crud.get_user(name, last_name):
+        raise HTTPException(status_code=409, detail="User is already in use")
+    
     user_idx = await crud.post_user(name, last_name, payload)
 
     response_object = {

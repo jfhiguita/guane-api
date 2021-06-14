@@ -27,6 +27,12 @@ async def get_user(name: str, last_name: str):
 
     return await database.fetch_one(query=query)
 
+# get user id db
+async def get_user_id(id: int):
+    query = users.select().where(id == users.c.id)
+
+    return await database.fetch_one(query=query)
+
 # update user db
 async def put_user(name: str, last_name: str, payload: UserSchema):
     query = (

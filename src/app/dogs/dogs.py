@@ -16,6 +16,7 @@ from ..auth.bearer import JWTBearer
 from .crud import get_dog, post_dog, get_all, get_dog_adopted, put_dog, delete_dog
 from .models import DogDB, DogSchema
 from .utils import get_picture
+from app.users.crud import get_user_id
 
 # celery task
 from worker import create_task
@@ -26,6 +27,11 @@ router = APIRouter()
 # create dog
 @router.post("/{name}", response_model=DogDB, response_model_exclude_unset=True, status_code=201)
 async def create_dog(name: str, payload: DogSchema):
+
+    # validate foreign key
+    if await get_user_id(payload.id_user) is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
     # async task
     create_task.delay(name)
 
@@ -35,6 +41,7 @@ async def create_dog(name: str, payload: DogSchema):
 
     response_object = {
         "id": dog_id,
+        "id_user": payload.id_user,
         "name": name,
         "picture": dog_picture,
         "is_adopted": payload.is_adopted,

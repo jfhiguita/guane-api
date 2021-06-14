@@ -9,6 +9,7 @@ from sqlalchemy import (
     Integer,
     String,
     Boolean,
+    ForeignKey,
     Table
 )
 
@@ -32,7 +33,7 @@ dogs = Table(
     Column("picture", String(100)),
     Column("is_adopted", Boolean),
     Column("create_date", DateTime, default=func.now(), nullable=False),
-    #Column("user_id", Integer, ForeignKey("users.id")),
+    Column("id_user", Integer, ForeignKey("users.id")),
 )
 
 #users table
@@ -40,7 +41,7 @@ users = Table(
     "users",
     metadata,
     Column("id", Integer, primary_key=True),
-    Column("name", String(50)),
+    Column("name", String(50), nullable=False),
     Column("last_name", String(50)),
     Column("email", String(120)),
 )

@@ -8,7 +8,8 @@ from app.db import dogs, database
 
 # create db
 async def post_dog(name: str, payload: DogSchema, dog_picture, dog_create_date):
-    query = dogs.insert().values(name=name,
+    query = dogs.insert().values(id_user=payload.id_user,
+                                name=name,
                                 picture=dog_picture,
                                 is_adopted=payload.is_adopted,
                                 create_date=dog_create_date

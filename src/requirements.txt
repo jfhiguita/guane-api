@@ -22,5 +22,6 @@ typing-extensions==3.10.0.0
 urllib3==1.26.4
 uvicorn==0.13.4
 celery==5.0.2
+alembic
 redis
 flower

@@ -7,7 +7,7 @@ from pydantic.networks import EmailStr
 
 # user schema
 class UserSchema(BaseModel):
-    email: EmailStr = "example@example.com"
+    email: EmailStr
 
 # user model
 class UserDB(UserSchema):

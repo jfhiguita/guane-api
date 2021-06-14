@@ -8,7 +8,7 @@ from celery import Celery
 from celery.utils.log import get_task_logger
 
 #send file
-from app.send_file import send_f
+from app.dogs.utils import send_f
 
 
 # init celery
