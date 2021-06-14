@@ -17,10 +17,12 @@ router = APIRouter()
 async def user(*,
     name: str = Path(..., title="Name of the user", min_length=3, max_length=50),
     last_name: str = Path(..., title="Last name of the user", min_length=3, max_length=50),
-    payload: UserSchema):
+    payload: UserSchema
+    ):
 
+    # validate user name and lastname
     if await crud.get_user(name, last_name):
-        raise HTTPException(status_code=409, detail="User is already in use")
+        raise HTTPException(status_code=409, detail="User already exist")
     
     user_idx = await crud.post_user(name, last_name, payload)
 

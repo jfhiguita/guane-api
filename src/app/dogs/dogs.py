@@ -8,6 +8,7 @@ from typing import List
 
 #fastapi
 from fastapi import APIRouter, HTTPException, Body, Depends
+from fastapi.params import Path
 
 # auth
 from ..auth.bearer import JWTBearer
@@ -25,8 +26,11 @@ from worker import create_task
 router = APIRouter()
 
 # create dog
-@router.post("/{name}", response_model=DogDB, response_model_exclude_unset=True, status_code=201)
-async def create_dog(name: str, payload: DogSchema):
+@router.post("/{name}", dependencies=[Depends(JWTBearer())], response_model=DogDB, response_model_exclude_unset=True, status_code=201)
+async def create_dog(*,
+    name: str = Path(..., title="Name of the user", min_length=3, max_length=50),
+    payload: DogSchema
+    ):
 
     # validate foreign key
     if await get_user_id(payload.id_user) is None:
@@ -81,10 +85,15 @@ async def update_dog(name: str, payload: DogSchema):
     if not dog:
         raise HTTPException(status_code=404, detail="Dog not found")
 
+     # validate foreign key
+    if await get_user_id(payload.id_user) is None:
+        raise HTTPException(status_code=404, detail="User not found")
+
     dog_id = await put_dog(name, payload)
 
     response_object = {
         "id": dog_id,
+        "id_user": payload.id_user,
         "name": name,
         "picture": dog["picture"],
         "is_adopted": payload.is_adopted,

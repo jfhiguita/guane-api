@@ -41,7 +41,8 @@ async def put_dog(name: str, payload:DogSchema):
         dogs
         .update()
         .where(name == dogs.c.name)
-        .values(is_adopted=payload.is_adopted)
+        .values(is_adopted=payload.is_adopted,
+                id_user=payload.id_user,)
         .returning(dogs.c.id)
     )
 
